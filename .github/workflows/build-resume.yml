@@ -2,10 +2,13 @@ name: Build Resume PDF
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
   pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:  # allows manual trigger from GitHub UI
+    branches:
+      - main
+      - master
 
 jobs:
   build:
@@ -15,19 +18,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install LaTeX
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            texlive-latex-base \
-            texlive-latex-extra \
-            texlive-fonts-recommended \
-            texlive-fonts-extra
-
-      - name: Compile resume
-        run: |
-          pdflatex -interaction=nonstopmode NPCV_ST/resume.tex
-          pdflatex -interaction=nonstopmode NPCV_ST/resume.tex
+      - name: Compile LaTeX to PDF
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: resume.tex
+          work_in_root_file_dir: true
+          working_directory: NPCV_ST
+          latexmk_use_xelatex: false
+          latexmk_use_lualatex: false
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
@@ -36,13 +34,13 @@ jobs:
           path: NPCV_ST/resume.pdf
           retention-days: 30
 
-      - name: Commit PDF back to repo (optional)
+      - name: Commit PDF back to repo
         if: github.event_name == 'push'
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add NPCV_ST/resume.pdf
-          git diff --staged --quiet || git commit -m "ci: rebuild resume PDF [skip ci]"
+          git diff --staged --quiet || git commit -m "ci: auto-compile resume.pdf [skip ci]"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
