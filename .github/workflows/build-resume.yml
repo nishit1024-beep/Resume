@@ -26,14 +26,14 @@ jobs:
 
       - name: Compile resume
         run: |
-          pdflatex -interaction=nonstopmode resume.tex
-          pdflatex -interaction=nonstopmode resume.tex
+          pdflatex -interaction=nonstopmode NPCV_ST/resume.tex
+          pdflatex -interaction=nonstopmode NPCV_ST/resume.tex
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: Nishit_Panchal_Resume
-          path: resume.pdf
+          path: NPCV_ST/resume.pdf
           retention-days: 30
 
       - name: Commit PDF back to repo (optional)
@@ -41,7 +41,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add resume.pdf
+          git add NPCV_ST/resume.pdf
           git diff --staged --quiet || git commit -m "ci: rebuild resume PDF [skip ci]"
           git push
         env:
