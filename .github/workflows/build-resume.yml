@@ -27,10 +27,13 @@ jobs:
           latexmk_use_xelatex: false
           latexmk_use_lualatex: false
 
+      - name: Move PDF to root
+        run: cp NPCV_ST/resume.pdf resume.pdf
+
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: Nishit_Panchal_Resume
-          path: NPCV_ST/resume.pdf
+          path: resume.pdf
           retention-days: 30
           
