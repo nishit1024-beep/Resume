@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Compile LaTeX to PDF
+      - name: Compile resume
         uses: xu-cheng/latex-action@v3
         with:
           root_file: resume.tex
@@ -27,13 +27,30 @@ jobs:
           latexmk_use_xelatex: false
           latexmk_use_lualatex: false
 
-      - name: Move PDF to root
-        run: cp NPCV_ST/resume.pdf resume.pdf
+      - name: Compile cover letter
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cover_letter.tex
+          work_in_root_file_dir: true
+          working_directory: NPCV_ST
+          latexmk_use_xelatex: false
+          latexmk_use_lualatex: false
 
-      - name: Upload PDF artifact
+      - name: Move PDFs to root
+        run: |
+          cp NPCV_ST/resume.pdf resume.pdf
+          cp NPCV_ST/cover_letter.pdf cover_letter.pdf
+
+      - name: Upload resume artifact
         uses: actions/upload-artifact@v4
         with:
           name: Nishit_Panchal_Resume
           path: resume.pdf
           retention-days: 30
-          
+
+      - name: Upload cover letter artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Nishit_Panchal_Cover_Letter
+          path: cover_letter.pdf
+          retention-days: 30
